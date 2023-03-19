@@ -234,6 +234,21 @@ function custom_function_default_issue_update_notify( $p_issue_id ) {
  * @return void
  */
 function custom_function_default_issue_create_validate( BugData $p_new_issue_data ) {
+	// print "<pre>";	print_r($p_new_issue_data);	print "</pre>";
+
+	$f_target_version		= $p_new_issue_data->target_version;
+	$f_product_version		= $p_new_issue_data->version;
+	$f_description			= $p_new_issue_data->description;
+
+	if(is_blank( $f_product_version) ) {
+		error_parameters( 'product_version' );
+		trigger_error( ERROR_EMPTY_FIELD, ERROR );
+	}
+
+	if(is_blank( $f_product_version) ) {
+		error_parameters( 'target_version' );
+		trigger_error( ERROR_EMPTY_FIELD, ERROR );
+	}
 }
 
 /**

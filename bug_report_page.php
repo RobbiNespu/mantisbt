@@ -455,10 +455,10 @@ if( $t_show_attachments ) {
 ?>
 	<tr>
 		<th class="category">
-			<label for="product_version"><?php echo lang_get( 'product_version' ) ?></label>
+			<span class="required">*</span><label for="product_version"><?php echo lang_get( 'product_version' ) ?></label>
 		</th>
 		<td>
-			<select <?php echo helper_get_tab_index() ?> id="product_version" name="product_version" class="input-sm">
+			<select <?php echo helper_get_tab_index() ?> id="product_version" name="product_version" class="input-sm" required>
 				<?php print_version_option_list( $f_product_version, $t_project_id, $t_product_version_released_mask ) ?>
 			</select>
 		</td>
@@ -548,10 +548,10 @@ if( $t_show_attachments ) {
 	if( $t_show_target_version ) { ?>
 	<tr>
 		<th class="category">
-			<label for="target_version"><?php echo lang_get( 'target_version' ) ?></label>
+			<span class="required">*</span><label for="target_version"><?php echo lang_get( 'target_version' ) ?></label>
 		</th>
 		<td>
-			<select <?php echo helper_get_tab_index() ?> id="target_version" name="target_version" class="input-sm">
+			<select <?php echo helper_get_tab_index() ?> id="target_version" name="target_version" class="input-sm" required>
 				<?php print_version_option_list( '', null, VERSION_FUTURE ) ?>
 			</select>
 		</td>
