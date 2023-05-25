@@ -28,6 +28,9 @@
  * @uses logging_api.php
  * @uses user_api.php
  * @uses utility_api.php
+ *
+ * Ignore warnings about LDAP extension being unavailable
+ * @noinspection PhpComposerExtensionStubsInspection
  */
 
 require_api( 'config_api.php' );
@@ -37,7 +40,8 @@ require_api( 'user_api.php' );
 require_api( 'utility_api.php' );
 
 /**
- * @var array $g_cache_ldap_data LDAP attributes cache, indexed by username
+ * LDAP attributes cache, indexed by username
+ * @see ldap_cache_user_data()
  */
 $g_cache_ldap_data = array();
 
@@ -171,7 +175,10 @@ function ldap_email_from_username( $p_username ) {
 	if( ldap_simulation_is_enabled() ) {
 		$t_email = ldap_simulation_email_from_username( $p_username );
 	} else {
-		$t_email = (string)ldap_get_field_from_username( $p_username, 'mail' );
+		$t_email = (string)ldap_get_field_from_username(
+			$p_username,
+			config_get_global( 'ldap_email_field' )
+		);
 	}
 	return $t_email;
 }
@@ -211,16 +218,14 @@ function ldap_escape_string( $p_string ) {
 	$t_find = array( '\\', '*', '(', ')', '/', "\x00" );
 	$t_replace = array( '\5c', '\2a', '\28', '\29', '\2f', '\00' );
 
-	$t_string = str_replace( $t_find, $t_replace, $p_string );
-
-	return $t_string;
+    return str_replace( $t_find, $t_replace, $p_string );
 }
 
 /**
  * Retrieves user data from LDAP and stores it in cache.
  *
  * Uses a single LDAP query to retrieve the following fields:
- * - email (mail)
+ * - email {@see $g_ldap_email_field}
  * - realname {@see $g_ldap_realname_field}
  *
  * @param string $p_username The username.
@@ -254,7 +259,7 @@ function ldap_cache_user_data( $p_username ) {
 	$t_search_filter = '(&' . $t_ldap_organization
 		. '(' . $t_ldap_uid_field . '=' . ldap_escape_string( $p_username ) . '))';
 	$t_search_attrs = array(
-		'mail',
+		config_get_global( 'ldap_email_field' ),
 		config_get_global( 'ldap_realname_field' )
 	);
 
@@ -348,6 +353,8 @@ function ldap_authenticate( $p_user_id, $p_password ) {
  * @param string $p_username The user name.
  * @param string $p_password The password.
  * @return true: authenticated, false: failed to authenticate.
+ *
+ * @noinspection PhpDocMissingThrowsInspection
  */
 function ldap_authenticate_by_username( $p_username, $p_password ) {
 	if( ldap_simulation_is_enabled() ) {
@@ -414,7 +421,8 @@ function ldap_authenticate_by_username( $p_username, $p_password ) {
 	# from LDAP.  This will allow us to use the local data after login without
 	# having to go back to LDAP.  This will also allow fallback to DB if LDAP is down.
 	if( $t_authenticated ) {
-		$t_user_id = user_get_id_by_name( $p_username );
+        /** @noinspection PhpUnhandledExceptionInspection */
+        $t_user_id = user_get_id_by_name( $p_username );
 
 		if( false !== $t_user_id ) {
 

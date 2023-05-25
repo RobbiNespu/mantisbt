@@ -25,7 +25,7 @@
  * **                                                                  **
  * **                      DO NOT UPDATE MANUALLY                      **
  * **                                                                  **
- * ** To improve a translation please visit http://translatewiki.net   **
+ * ** To improve a translation please visit https://translatewiki.net  **
  * ** Detailed instructions on how to create or update translations at **
  * ** http://www.mantisbt.org/wiki/doku.php/mantisbt:translationshowto **
  * **********************************************************************
@@ -33,7 +33,7 @@
 /** Norwegian Bokmål (norsk bokmål)
  * 
  * See the qqq 'language' for message documentation incl. usage of parameters
- * To improve a translation please visit http://translatewiki.net
+ * To improve a translation please visit https://translatewiki.net
  *
  * @ingroup Language
  * @file
@@ -41,6 +41,7 @@
  * @author Audun
  * @author Cocu
  * @author Danmichaelo
+ * @author EdoAug
  * @author EivindJ
  * @author Holje
  * @author Jon Harald Søby
@@ -206,7 +207,7 @@ $s_reproducibility_enum_string = '10:Alltid,30:Noen ganger,50:Tilfeldig,70:Har i
 $s_status_enum_string = '10:Ny,20:Tilbakemelding,30:Godkjent,40:Bekreftet,50:Delegert,80:Løst,90:Lukket';
 $s_resolution_enum_string = '10:Åpen,20:Fikset,30:Åpnet på nytt,40:Kan ikke reprodusere,50:Kan ikke fikses,60:Kopi,70:Ikke feil,80:Utsatt,90:Vil ikke fikse';
 $s_projection_enum_string = '10:Ingen,30:Kan omgås,50:Mindre fiks,70:Omfattende rekoding,90:Redesign';
-$s_eta_enum_string = '10:Ikke angitt,20:< 1 dag,30:2-3 dager,40:< 1 uke,50:< 1 mnd,60:> 1 mnd';
+$s_eta_enum_string = '10:Ikke angitt,20:< 1 dag,30:2-3 dager,40:< 1 uke,50:< 1 md,60:> 1 md';
 $s_sponsorship_enum_string = '0:Ikke betalende,1:Forespørsel,2:Betalende';
 $s_new_account_subject = 'Kontoregistrering';
 $s_new_account_greeting = 'Takk for at du registrerte deg. Det har blitt opprettet en konto med brukernavn \'%1$s\'. For å fullføre registreringen, vennligst åpne følgende URL i nettleseren din (NB! Hele URLen skal være på en linje) og angi passordet ditt:';
@@ -1012,7 +1013,7 @@ $s_view_issue = 'Vis sak';
 $s_perm_rpt_capability = 'Rettighet';
 $s_view = 'Se';
 $s_issues = 'SAKER';
-$s_report_issue = 'Leggd inn en sak';
+$s_report_issue = 'Rapporter et problem';
 $s_update_issue = 'Oppdatere en sak';
 $s_monitor_issue = 'Overvåke en sak';
 $s_handle_issue = 'Behandle en sak';
@@ -1240,7 +1241,7 @@ $MANTIS_ERROR[ERROR_DB_QUERY_FAILED] = 'Databaseforespørsel feilet. Feilmelding
 $MANTIS_ERROR[ERROR_DB_SELECT_FAILED] = 'Feil ved valg av database. Feilmelding fra database-server: #%1$d: %2$s.';
 $MANTIS_ERROR[ERROR_DB_IDENTIFIER_TOO_LONG] = 'Database-identifikator "%1$s" er for lang. Prøv å reduser størrelsen av g_db_table_prefix/suffix';
 $MANTIS_ERROR[ERROR_CATEGORY_DUPLICATE] = 'Kategorien eksisterer fra før.';
-$MANTIS_ERROR[ERROR_CATEGORY_NO_ACTION] = 'Ingen handling for kopiering er spesifisert.';
+$MANTIS_ERROR[ERROR_NO_COPY_ACTION] = 'Ingen handling for kopiering er spesifisert.';
 $MANTIS_ERROR[ERROR_CATEGORY_NOT_FOUND] = 'Finner ikke kategorien.';
 $MANTIS_ERROR[ERROR_CATEGORY_NOT_FOUND_FOR_PROJECT] = 'Kategori «%1$s» ikke funnet for prosjekt «%2$s».';
 $MANTIS_ERROR[ERROR_CATEGORY_CANNOT_DELETE_DEFAULT] = 'Denne kategorien kan ikke slettes, fordi den er definert som «Standardkategori for flyttinger».';

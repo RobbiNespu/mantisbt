@@ -25,7 +25,7 @@
  * **                                                                  **
  * **                      DO NOT UPDATE MANUALLY                      **
  * **                                                                  **
- * ** To improve a translation please visit http://translatewiki.net   **
+ * ** To improve a translation please visit https://translatewiki.net  **
  * ** Detailed instructions on how to create or update translations at **
  * ** http://www.mantisbt.org/wiki/doku.php/mantisbt:translationshowto **
  * **********************************************************************
@@ -33,17 +33,20 @@
 /** Polish (polski)
  * 
  * See the qqq 'language' for message documentation incl. usage of parameters
- * To improve a translation please visit http://translatewiki.net
+ * To improve a translation please visit https://translatewiki.net
  *
  * @ingroup Language
  * @file
  *
+ * @author Ajeje Brazorf
  * @author Alan ffm
  * @author BeginaFelicysym
  * @author Chrumps
  * @author Cysioland
  * @author Debeet
+ * @author Dzidek
  * @author Expert3222
+ * @author Kareyac
  * @author Macofe
  * @author Mansoft
  * @author Mazab IZW
@@ -54,6 +57,7 @@
  * @author Rezonansowy
  * @author Sp5uhe
  * @author Stojex
+ * @author Strebski
  * @author Szmyk
  * @author Tszypowski
  * @author Ty221
@@ -61,7 +65,6 @@
  * @author Woytecr
  */
 
-$s_directionality = 'ldp';
 $s_actiongroup_menu_copy = 'Kopiuj';
 $s_actiongroup_menu_assign = 'Przypisz';
 $s_actiongroup_menu_resolve = 'Rozwiąż';
@@ -353,8 +356,14 @@ $s_timezone = 'Strefa czasowa';
 $s_prefs_reset_msg = 'Preferencje zostały przywrócone...';
 $s_prefs_updated_msg = 'Preferencje zostały zaktualizowane...';
 $s_select_profile = 'Wybierz profil';
+$s_add_profile = 'Dodaj profil';
 $s_edit_profile = 'Edytuj profil';
+$s_update_profile = 'Zaktualizuj profil';
 $s_delete_profile = 'Usuń profil';
+$s_delete_profile_confirm_msg = 'Czy na pewno chcesz usunąć profil „%1$s”?';
+$s_global_profile = 'Profil globalny';
+$s_default_profile = 'Domyślny profil';
+$s_profile_description = 'Opis systemu';
 $s_my_sponsorship = 'Moje sponsorowanie';
 $s_update_sponsorship_button = 'Zmień stan płatności';
 $s_no_sponsored = 'Nie znaleziono sponsorowanych zgłoszeń przypisanych Tobie.';
@@ -415,6 +424,7 @@ $s_reminder_sent_none = 'Przypomnienia nie mogły zostać wysłane';
 $s_reminder_list_truncated = 'lista odbiorców skrócona';
 $s_bug_send_button = 'Wyślij';
 $s_reminder = 'Przypomnienie';
+$s_reminder_mentions = 'Możesz teraz wspomnieć o użytkownikach, aby przekazywać im powiadomienia, zamiast korzystać z funkcji przypomnień. Na przykład inni mogą o Tobie wspomnieć, pisząc %1s w sprawach i notatkach, a Ty otrzymasz powiadomienie e-mailem.';
 $s_reminder_explain = 'Ten komentarz zostanie wysłany do osób obserwujących zgłoszenie.';
 $s_reminder_monitor = 'Następujący odbiorcy zaczną obserwować zgłoszenie. Mogą zrezygnować za pomocą przycisku zakończenia obserwowania.';
 $s_reminder_store = 'Komentarz zostanie zapisany razem ze zgłoszeniem.';
@@ -647,6 +657,7 @@ $s_plugin = 'Wtyczka';
 $s_plugins_installed = 'Zainstalowane wtyczki';
 $s_plugins_available = 'Dostępne wtyczki';
 $s_plugin_description = 'Opis';
+$s_plugin_problem_description = 'Opis problemu';
 $s_plugin_author = 'Autor: %1$s';
 $s_plugin_url = 'Strona internetowa:';
 $s_plugin_depends = 'Zależności';
@@ -657,6 +668,7 @@ $s_plugin_actions = 'Działania';
 $s_plugin_install = 'Instaluj';
 $s_plugin_upgrade = 'Instaluj nowszą wersję';
 $s_plugin_uninstall = 'Odinstaluj';
+$s_plugin_manual_fix = 'Wymagana ręczna interwencja';
 $s_plugin_uninstall_message = 'Czy jesteś pewien, że chcesz odinstalować wtyczkę „%1$s”?';
 $s_plugin_key_label = 'Klucz:';
 $s_plugin_key_met = 'wtyczka gotowa';
@@ -1024,7 +1036,7 @@ $s_changelog = 'Lista zmian';
 $s_changelog_empty = 'Lista zmian niedostępna';
 $s_changelog_empty_manager = 'Brak dostępnych informacji o Liście Zmian. Problemy są uwzględniane, gdy projekty posiadają wersje, oraz są rozwiązywane przy pomocy "naprawiono w wersji".';
 $s_roadmap = 'Plan pracy';
-$s_resolved_progress = '%1$d z %2$d zgłoszeń zrealizowano. Postęp (%3$d%%).';
+$s_resolved_progress = '%1$d z %2$d zgłoszeń zrealizowano.';
 $s_roadmap_empty_manager = 'Brak dostępnych informacji o Planie Pracy. Problemy pojawią się, gdy projekty mają przypisane wersje a problemy posiadają ustawioną "Wersję docelową".';
 $s_http_auth_realm = 'Logowanie do MantisBT';
 $s_bug = 'zgłoszenie';
@@ -1292,7 +1304,7 @@ $MANTIS_ERROR[ERROR_DB_QUERY_FAILED] = 'Błąd wykonania zapytania w bazie danyc
 $MANTIS_ERROR[ERROR_DB_SELECT_FAILED] = 'Błąd bazy danych %1$d – %2$s.';
 $MANTIS_ERROR[ERROR_DB_IDENTIFIER_TOO_LONG] = 'Identyfikator bazodanowy "%1$s" jest za długi. Spróbuj zmniejszyć rozmiar g_db_table_prefix/suffix';
 $MANTIS_ERROR[ERROR_CATEGORY_DUPLICATE] = 'Podana kategoria już istnieje.';
-$MANTIS_ERROR[ERROR_CATEGORY_NO_ACTION] = 'Nie zdefiniowano możliwości kopiowania.';
+$MANTIS_ERROR[ERROR_NO_COPY_ACTION] = 'Nie zdefiniowano możliwości kopiowania.';
 $MANTIS_ERROR[ERROR_CATEGORY_NOT_FOUND] = 'Nie znaleziono kategorii.';
 $MANTIS_ERROR[ERROR_CATEGORY_NOT_FOUND_FOR_PROJECT] = 'Brak kategorii „%1$s” dla projektu „%2$s”.';
 $MANTIS_ERROR[ERROR_CATEGORY_CANNOT_DELETE_DEFAULT] = 'Nie można usunąć tej kategorii, ponieważ jest ona zdefiniowana jako "Domyślna kategoria do Przenoszenia".';
@@ -1353,6 +1365,7 @@ $MANTIS_ERROR[ERROR_DEPRECATED_SUPERSEDED] = 'Wycofana funkcja: "%1$s", zamiast 
 $MANTIS_ERROR[ERROR_DISPLAY_USER_ERROR_INLINE] = 'Ostrzeżenie: system jest skonfigurowany do wyświetlania błędów MantisBT (E_USER_ERROR) w tekście. Realizacja programu będzie kontynuowana; może to prowadzić do problemów z integralnością systemu/danych.';
 $MANTIS_ERROR[ERROR_TYPE_MISMATCH] = 'Niezgodność typu danych. Włącz szczegółowe komunikaty o błędach, aby uzyskać więcej informacji.';
 $MANTIS_ERROR[ERROR_BUG_CONFLICTING_EDIT] = 'Ten problem został zaktualizowany przez innego użytkownika, wróć do problemu i prześlij zmiany ponownie.';
+$MANTIS_ERROR[ERROR_USER_TOKEN_NOT_FOUND] = 'Nie znaleziono tokena API użytkownika o identyfikatorze "%d".';
 $s_dropzone_default_message = 'Dołączaj pliki, przeciągając je i upuszczając, wybierając je lub wklejając.';
 $s_dropzone_fallback_message = 'Twoja przeglądarka nie wspiera metody drag\'n\'drop.';
 $s_dropzone_file_too_big = 'Plik jest za duży ({{filesize}}MiB). Maksymalny rozmiar pliku: {{maxFilesize}}MiB.';

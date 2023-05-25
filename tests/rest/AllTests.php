@@ -26,7 +26,10 @@
 /**
  * Test config
  */
-require_once __DIR__ . '/RestIssueAddTest.php';
+require_once __DIR__ . '/RestImpersonateUserTests.php';
+require_once __DIR__ . '/RestIssueTests.php';
+require_once __DIR__ . '/RestProjectVersionTests.php';
+require_once __DIR__ . '/RestUserTests.php';
 
 /**
  * Soap Test Suite
@@ -35,7 +38,7 @@ require_once __DIR__ . '/RestIssueAddTest.php';
  * @copyright Copyright 2002  MantisBT Team   - mantisbt-dev@lists.sourceforge.net
  * @link http://www.mantisbt.org
  */
-class RestAllTests extends PHPUnit_Framework_TestSuite
+class RestAllTests extends PHPUnit\Framework\TestSuite
 {
 	/**
 	 * setUp
@@ -51,7 +54,10 @@ class RestAllTests extends PHPUnit_Framework_TestSuite
 	public static function suite() {
 		$t_suite = new RestAllTests( 'REST API' );
 
-		$t_suite->addTestSuite( 'RestIssueAddTest' );
+		$t_suite->addTestSuite( 'RestImpersonateUserTests' );
+		$t_suite->addTestSuite( 'RestIssueTests' );
+		$t_suite->addTestSuite( 'RestProjectVersionTests' );
+		$t_suite->addTestSuite( 'RestUserTests' );
 
 		return $t_suite;
 	}
