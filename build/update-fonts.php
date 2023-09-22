@@ -17,13 +17,15 @@
 /**
  * Download fonts files in WOFF, WOFF2 formats for local usage.
  *
- * Files are retrieved using google-webfonts-helper's REST API
- * @link https://google-webfonts-helper.herokuapp.com/fonts
+ * Files are retrieved using Mario Ranftl's google-webfonts-helper REST API
+ * @link https://gwfh.mranftl.com/fonts
  *
  * @package MantisBT
  * @copyright Copyright 2021  MantisBT Team - mantisbt-dev@lists.sourceforge.net
  * @link https://mantisbt.org
  */
+
+use GuzzleHttp\Client;
 
 $g_mantis_root = dirname( __DIR__ ) . '/';
 
@@ -34,7 +36,7 @@ require_once( $g_mantis_root . 'core.php' );
  * Class FontDownload
  */
 class FontDownload {
-	const FONT_API_ROOT = 'https://google-webfonts-helper.herokuapp.com/api/fonts/';
+	const FONT_API_ROOT = 'https://gwfh.mranftl.com/api/fonts/';
 	const FONT_FORMATS = 'woff,woff2';
 	const FONT_VARIANTS = 'regular';
 
@@ -44,7 +46,7 @@ class FontDownload {
 	/** @var string Path to local CSS fonts file */
 	protected $fonts_css;
 
-	/** @var css Local CSS file contents */
+	/** @var string $css Local CSS file contents */
 	protected $css;
 
 	/** @var GuzzleHttp\Client */
@@ -70,9 +72,10 @@ class FontDownload {
 
 	/**
 	 * FontDownload constructor.
+	 *
 	 * @param string $p_font Font Id
 	 */
-	public function __construct( $p_font ) {
+	public function __construct( string $p_font ) {
 		global $g_mantis_root;
 
 		echo "Processing font: $p_font\n";
@@ -81,7 +84,7 @@ class FontDownload {
 		$this->fonts_css = $g_mantis_root . 'css/fonts.css';
 
 		if( !self::$request ) {
-			self::$request = new \GuzzleHttp\Client( [
+			self::$request = new Client( [
 				'base_uri' => self::FONT_API_ROOT
 			] );
 		}
@@ -105,7 +108,8 @@ class FontDownload {
 	 *
 	 * @return array List of font ids.
 	 */
-	static public function getLocalFonts() {
+	static public function getLocalFonts(): array
+	{
 		$t_fonts = [];
 		foreach( config_get('font_family_choices_local') as $t_font ) {
 			$t_font = str_replace( ' ', '-', $t_font );
@@ -174,6 +178,7 @@ class FontDownload {
 			fwrite( $t_zipfile, $t_response->getBody() );
 			$t_zipfile_name = stream_get_meta_data( $t_zipfile )['uri'];
 
+			/** @noinspection PhpComposerExtensionStubsInspection */
 			$t_zip = new ZipArchive();
 			$t_zip->open( $t_zipfile_name );
 			$t_zip->extractTo( $this->fonts_dir );
@@ -218,7 +223,7 @@ class FontDownload {
 	 *
 	 * @param int $p_count Reference number of font files
 	 */
-	public function sanityCheck( $p_count = 0 ) {
+	public function sanityCheck( int $p_count = 0 ) {
 		if( $p_count && $p_count != $this->count ) {
 			echo "WARNING: mismatched number of downloaded font files "
 				. "vs updated CSS references\n";

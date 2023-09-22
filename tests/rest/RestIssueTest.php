@@ -23,6 +23,8 @@
  * @link http://www.mantisbt.org
  */
 
+use Psr\Http\Message\ResponseInterface;
+
 require_once 'RestBase.php';
 
 /**
@@ -31,7 +33,11 @@ require_once 'RestBase.php';
  * @requires extension curl
  * @group REST
  */
+<<<<<<<< HEAD:tests/rest/RestIssueTests.php
 class RestIssueTests extends RestBase {
+========
+class RestIssueTest extends RestBase {
+>>>>>>>> master:tests/rest/RestIssueTest.php
 
 	/**
 	 * @var array $versions
@@ -56,13 +62,21 @@ class RestIssueTests extends RestBase {
 			);
 		}
 	}
+<<<<<<<< HEAD:tests/rest/RestIssueTests.php
+
+
+	public function testCreateIssueWithMinimalFields() {
+		$t_issue_to_add = $this->getIssueToAdd();
+		$t_response = $this->builder()->post( '/issues', $t_issue_to_add )->send();
+========
+>>>>>>>> master:tests/rest/RestIssueTest.php
 
 
 	public function testCreateIssueWithMinimalFields() {
 		$t_issue_to_add = $this->getIssueToAdd();
 		$t_response = $this->builder()->post( '/issues', $t_issue_to_add )->send();
 
-		$this->assertEquals( 201, $t_response->getStatusCode() );
+		$this->assertEquals( HTTP_STATUS_CREATED, $t_response->getStatusCode() );
 		$t_body = json_decode( $t_response->getBody(), true );
 		$t_issue = $t_body['issue'];
 		# file_put_contents( '/tmp/response.txt', var_export( $t_body, true ) );
@@ -106,7 +120,7 @@ class RestIssueTests extends RestBase {
 		$this->assertEquals( 'have not tried', $t_issue['reproducibility']['name'], 'reproducibility name' );
 		$this->assertEquals( 'have not tried', $t_issue['reproducibility']['label'], 'reproducibility label' );
 
-		$this->assertEquals( false, $t_issue['sticky'], 'sticky' );
+		$this->assertFalse( $t_issue['sticky'], 'sticky' );
 		$this->assertTrue( isset( $t_issue['created_at'] ), 'created at' );
 		$this->assertTrue( isset( $t_issue['updated_at'] ), 'updated at' );
 
@@ -125,7 +139,7 @@ class RestIssueTests extends RestBase {
 
 		$t_response = $this->builder()->post( '/issues', $t_issue_to_add )->send();
 
-		$this->assertEquals( 201, $t_response->getStatusCode() );
+		$this->assertEquals( HTTP_STATUS_CREATED, $t_response->getStatusCode() );
 		$t_body = json_decode( $t_response->getBody(), true );
 		$t_issue = $t_body['issue'];
 
@@ -163,7 +177,7 @@ class RestIssueTests extends RestBase {
 		$this->assertEquals( 'always', $t_issue['reproducibility']['name'], 'reproducibility name' );
 		$this->assertEquals( 'always', $t_issue['reproducibility']['label'], 'reproducibility label' );
 
-		$this->assertEquals( true, $t_issue['sticky'], 'sticky' );
+		$this->assertTrue( $t_issue['sticky'], 'sticky' );
 		$this->assertTrue( isset( $t_issue['created_at'] ), 'created at' );
 		$this->assertTrue( isset( $t_issue['updated_at'] ), 'updated at' );
 
@@ -184,7 +198,7 @@ class RestIssueTests extends RestBase {
 
 		$t_response = $this->builder()->post( '/issues', $t_issue_to_add )->send();
 
-		$this->assertEquals( 201, $t_response->getStatusCode() );
+		$this->assertEquals( HTTP_STATUS_CREATED, $t_response->getStatusCode() );
 		$t_body = json_decode( $t_response->getBody(), true );
 		$t_issue = $t_body['issue'];
 
@@ -208,7 +222,7 @@ class RestIssueTests extends RestBase {
 
 		$t_response = $this->builder()->post( '/issues', $t_issue_to_add )->send();
 
-		$this->assertEquals( 201, $t_response->getStatusCode() );
+		$this->assertEquals( HTTP_STATUS_CREATED, $t_response->getStatusCode() );
 		$t_body = json_decode( $t_response->getBody(), true );
 		$t_issue = $t_body['issue'];
 
@@ -234,7 +248,7 @@ class RestIssueTests extends RestBase {
 
 		$t_response = $this->builder()->post( '/issues', $t_issue_to_add )->send();
 
-		$this->assertEquals( 201, $t_response->getStatusCode() );
+		$this->assertEquals( HTTP_STATUS_CREATED, $t_response->getStatusCode() );
 		$t_body = json_decode( $t_response->getBody(), true );
 		$t_issue = $t_body['issue'];
 
@@ -262,7 +276,7 @@ class RestIssueTests extends RestBase {
 
 		$t_response = $this->builder()->post( '/issues', $t_issue_to_add )->send();
 
-		$this->assertEquals( 201, $t_response->getStatusCode() );
+		$this->assertEquals( HTTP_STATUS_CREATED, $t_response->getStatusCode() );
 		$t_body = json_decode( $t_response->getBody(), true );
 		$t_issue = $t_body['issue'];
 
@@ -286,7 +300,7 @@ class RestIssueTests extends RestBase {
 
 		$t_response = $this->builder()->post( '/issues', $t_issue_to_add )->send();
 
-		$this->assertEquals( 400, $t_response->getStatusCode() );
+		$this->assertEquals( HTTP_STATUS_BAD_REQUEST, $t_response->getStatusCode() );
 	}
 
 	public function testCreateIssueWithVersionObjectNameNotFound() {
@@ -297,7 +311,7 @@ class RestIssueTests extends RestBase {
 
 		$t_response = $this->builder()->post( '/issues', $t_issue_to_add )->send();
 
-		$this->assertEquals( 400, $t_response->getStatusCode() );
+		$this->assertEquals( HTTP_STATUS_BAD_REQUEST, $t_response->getStatusCode() );
 	}
 
 	public function testCreateIssueWithVersionStringNotFound() {
@@ -308,7 +322,7 @@ class RestIssueTests extends RestBase {
 
 		$t_response = $this->builder()->post( '/issues', $t_issue_to_add )->send();
 
-		$this->assertEquals( 400, $t_response->getStatusCode() );
+		$this->assertEquals( HTTP_STATUS_BAD_REQUEST, $t_response->getStatusCode() );
 	}
 
 	/**
@@ -331,7 +345,11 @@ class RestIssueTests extends RestBase {
 		config_set( 'tag_create_threshold', $t_threshold );
 
 		$t_response = $this->builder()->post( '/issues', $t_issue_to_add )->send();
+<<<<<<<< HEAD:tests/rest/RestIssueTests.php
 		$t_issue_id = $this->assertIssueCreatedWithTag( $this->tag_name, $t_response );
+========
+		$t_issue_id = $this->assertIssueCreatedWithTag( $t_response );
+>>>>>>>> master:tests/rest/RestIssueTest.php
 
 		$this->deleteIssueAfterRun( $t_issue_id );
 	}
@@ -343,16 +361,25 @@ class RestIssueTests extends RestBase {
 		$t_issue_to_add['tags'] = array( array( 'name' => $this->tag_name ) );
 
 		$t_response = $this->builder()->post( '/issues', $t_issue_to_add )->send();
+<<<<<<<< HEAD:tests/rest/RestIssueTests.php
 		$t_issue_id = $this->assertIssueCreatedWithTag( $this->tag_name, $t_response );
+========
+		$t_issue_id = $this->assertIssueCreatedWithTag( $t_response );
+>>>>>>>> master:tests/rest/RestIssueTest.php
 
 		$this->deleteIssueAfterRun( $t_issue_id );
 
 		# Tag by id
+		# TODO: replace internal call by GET /tag request when implemented (see #32863)
 		$t_tag = tag_get_by_name( $this->tag_name );
 		$t_issue_to_add['tags'] = array( array( 'id' => $t_tag['id'] ) );
 
 		$t_response = $this->builder()->post( '/issues', $t_issue_to_add )->send();
+<<<<<<<< HEAD:tests/rest/RestIssueTests.php
 		$t_issue_id = $this->assertIssueCreatedWithTag( $this->tag_name, $t_response );
+========
+		$t_issue_id = $this->assertIssueCreatedWithTag( $t_response );
+>>>>>>>> master:tests/rest/RestIssueTest.php
 
 		$this->deleteIssueAfterRun( $t_issue_id );
 	}
@@ -360,13 +387,12 @@ class RestIssueTests extends RestBase {
 	/**
 	 * Checks that the issue was created successfully and the tag was properly attached.
 	 *
-	 * @param string $p_tag_name
-	 * @param \GuzzleHttp\Psr7\Response $p_response
+	 * @param ResponseInterface $p_response
 	 *
 	 * @return integer Created issue Id
 	 */
-	protected function assertIssueCreatedWithTag( $p_tag_name, $p_response ) {
-		$this->assertEquals( 201, $p_response->getStatusCode() );
+	protected function assertIssueCreatedWithTag( $p_response ) {
+		$this->assertEquals( HTTP_STATUS_CREATED, $p_response->getStatusCode() );
 
 		$t_body = json_decode( $p_response->getBody(), true );
 		$t_issue = $t_body['issue'];
@@ -428,13 +454,94 @@ class RestIssueTests extends RestBase {
 		);
 	}
 
+	public function testTagAttachDetach() {
+		# Create test issue
+		$t_issue_to_add = $this->getIssueToAdd();
+		$t_response = $this->builder()->post( '/issues', $t_issue_to_add )->send();
+		$this->assertEquals( HTTP_STATUS_CREATED, $t_response->getStatusCode() );
+		$t_body = json_decode( $t_response->getBody(), true );
+		$t_issue_id = $t_body['issue']['id'];
+		$this->deleteIssueAfterRun( $t_issue_id );
+
+		$t_url_base = "/issues/$t_issue_id/tags/";
+
+		# TODO: replace internal call by GET /tag request when implemented (see #32863)
+		$this->assertFalse( tag_get_by_name( $this->tag_name ), "The Tag already exists" );
+
+		# Attach the tag - it will be created
+		$t_data = $this->getTagData();
+		$t_response = $this->builder()->post( $t_url_base, $t_data )->send();
+		$this->assertEquals( HTTP_STATUS_CREATED, $t_response->getStatusCode(),
+			"Failed to attach the tag"
+		);
+
+		# TODO: replace internal call by GET /tag request when implemented (see #32863)
+		$t_tag_id = tag_get_by_name( $this->tag_name )['id'];
+		$this->assertNotFalse( $t_tag_id, "Tag has not been created" );
+
+		$t_body = json_decode( $t_response->getBody() );
+		$t_issue_tags = array_column( $t_body->issues[0]->tags ?? [], 'id' );
+		$this->assertContains( $t_tag_id, $t_issue_tags,
+			"Tag does not exist in created Issue data"
+		);
+
+		# Attach the same tag again
+		$t_response = $this->builder()->post( $t_url_base, $t_data )->send();
+		$this->assertEquals( HTTP_STATUS_CREATED, $t_response->getStatusCode(),
+			"Failed to attach the same tag"
+		);
+
+		# Detach the tag
+		$t_response = $this->builder()->delete( $t_url_base . $t_tag_id )->send();
+		$this->assertEquals( HTTP_STATUS_SUCCESS, $t_response->getStatusCode(),
+			"Tag was not detached"
+		);
+
+		# Try to detach the same tag again
+		$t_response = $this->builder()->delete( $t_url_base . $t_tag_id )->send();
+		$this->assertEquals( HTTP_STATUS_SUCCESS, $t_response->getStatusCode(),
+			"Attempting to detach an unattached tag should have succeeded"
+		);
+
+		# Try to detach a non-existing tag
+		$t_tag_id = 99999;
+		while( tag_exists( $t_tag_id ) ) {
+			$t_tag_id++;
+		}
+		$t_response = $this->builder()->delete( "/issues/$t_issue_id/tags/$t_tag_id" )->send();
+		$this->assertEquals( HTTP_STATUS_NOT_FOUND, $t_response->getStatusCode(),
+			"Detaching a non-existing tag should have failed"
+		);
+	}
+
+	public function testTagAttachDetachNonExistingIssue() {
+		$t_nonexistent_issue_id = 99999;
+		while( bug_exists( $t_nonexistent_issue_id ) ) {
+			$t_nonexistent_issue_id++;
+		}
+		$t_url_base = "/issues/$t_nonexistent_issue_id/tags/";
+
+		$t_response = $this->builder()->post( $t_url_base, $this->getTagData() )->send();
+		$this->assertEquals( HTTP_STATUS_NOT_FOUND, $t_response->getStatusCode(),
+			"Attaching a tag to a non-existing issue should have failed"
+		);
+
+		# TODO: replace internal calls by GET /tag request when implemented (see #32863)
+		$t_tag_id = tag_create( $this->tag_name );
+		$this->assertTrue( tag_exists( $t_tag_id ) );
+		$t_response = $this->builder()->delete( $t_url_base . $t_tag_id )->send();
+		$this->assertEquals( HTTP_STATUS_NOT_FOUND, $t_response->getStatusCode(),
+			"Detaching an existing tag from a non-existing issue should have failed"
+		);
+	}
+
 	public function testCreateIssueNoSummary() {
 		$t_issue_to_add = $this->getIssueToAdd();
 		unset( $t_issue_to_add['summary'] );
 
 		$t_response = $this->builder()->post( '/issues', $t_issue_to_add )->send();
 
-		$this->assertEquals( 400, $t_response->getStatusCode() );
+		$this->assertEquals( HTTP_STATUS_BAD_REQUEST, $t_response->getStatusCode() );
 	}
 
 	public function testCreateIssueNoDescription() {
@@ -443,7 +550,7 @@ class RestIssueTests extends RestBase {
 
 		$t_response = $this->builder()->post( '/issues', $t_issue_to_add )->send();
 
-		$this->assertEquals( 400, $t_response->getStatusCode() );
+		$this->assertEquals( HTTP_STATUS_BAD_REQUEST, $t_response->getStatusCode() );
 	}
 
 	public function testCreateIssueNoCategory() {
@@ -470,10 +577,10 @@ class RestIssueTests extends RestBase {
 
 		$t_response = $this->builder()->post( '/issues', $t_issue_to_add )->send();
 
-		$this->assertEquals( 400, $t_response->getStatusCode() );
+		$this->assertEquals( HTTP_STATUS_BAD_REQUEST, $t_response->getStatusCode() );
 	}
 
-	public function setUp() {
+	public function setUp(): void {
 		parent::setUp();
 
 		# Retrieve the 3 most recent versions
@@ -487,10 +594,18 @@ class RestIssueTests extends RestBase {
 		} while( !tag_is_unique( $this->tag_name ) );
 	}
 
+<<<<<<<< HEAD:tests/rest/RestIssueTests.php
 	public function tearDown() {
 		parent::tearDown();
 
 		# Delete tag if it exists
+========
+	public function tearDown(): void {
+		parent::tearDown();
+
+		# Delete tag if it exists
+		# TODO: replace internal calls by GET /tag request when implemented (see #32863)
+>>>>>>>> master:tests/rest/RestIssueTest.php
 		$t_tag = tag_get_by_name( $this->tag_name );
 		if( $t_tag ) {
 			# Must be logged in to delete tag
@@ -500,4 +615,20 @@ class RestIssueTests extends RestBase {
 			tag_delete( $t_tag['id'] );
 		}
 	}
+<<<<<<<< HEAD:tests/rest/RestIssueTests.php
+========
+
+	/**
+	 * Generates Tag Data payload for Tag Attach endpoint.
+	 *
+	 * @return array[]
+	 */
+	private function getTagData(): array {
+		return [
+			'tags' => [
+				[ 'name' => $this->tag_name ],
+			]
+		];
+	}
+>>>>>>>> master:tests/rest/RestIssueTest.php
 }

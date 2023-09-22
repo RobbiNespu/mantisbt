@@ -761,7 +761,7 @@ function file_clean_name( $p_filename ) {
  */
 function file_generate_unique_name( $p_filepath ) {
 	do {
-		$t_string = md5( crypto_generate_random_string( 32, false ) );
+		$t_string = md5( random_bytes( 32 ) );
 	} while( !diskfile_is_name_unique( $t_string, $p_filepath ) );
 
 	return $t_string;
@@ -1323,7 +1323,11 @@ function file_move_bug_attachments( $p_bug_id, $p_project_id_to ) {
 			}
 			chmod( $t_disk_file_name_to, config_get( 'attachments_file_permissions' ) );
 			# Don't pop the parameters after query execution since we're in a loop
-			db_query( $t_query_disk_attachment_update, array( db_prepare_string( $t_path_to ), $c_bug_id, (int)$t_row['id'] ), -1, -1, false );
+			db_query( $t_query_disk_attachment_update,
+				array( $t_path_to, $c_bug_id, (int)$t_row['id'] ),
+				-1, -1,
+				false
+			);
 		} else {
 			trigger_error( ERROR_FILE_DUPLICATE, ERROR );
 		}

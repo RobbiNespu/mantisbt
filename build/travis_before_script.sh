@@ -22,8 +22,13 @@ PORT=8080
 MANTIS_DB_NAME=bugtracker
 MANTIS_BOOTSTRAP=tests/bootstrap.php
 MANTIS_CONFIG=config/config_inc.php
+MANTIS_ANONYMOUS=anonymous
 
 TIMESTAMP=$(date "+%s")
+
+# To ensure we are not hit by unique key constraint when creating anonymous account,
+# we generate a random cookie_string like auth_generate_unique_cookie_string() does.
+COOKIE_STRING=$(head -c48 /dev/urandom |base64 |tr '+' '-' |tr '/' '_')
 
 SQL_CREATE_DB="CREATE DATABASE $MANTIS_DB_NAME;"
 SQL_CREATE_PROJECT="INSERT INTO mantis_project_table
@@ -41,6 +46,12 @@ SQL_CREATE_TAGS="INSERT INTO mantis_tag_table
 	VALUES
 	(0, 'modern-ui', '', $TIMESTAMP, $TIMESTAMP),
 	(0, 'patch', '', $TIMESTAMP, $TIMESTAMP);"
+SQL_CREATE_ANONYMOUS_USER="INSERT INTO mantis_user_table
+	(username, realname, email, password, cookie_string,
+	 enabled, protected, access_level, last_visit, date_created)
+	VALUES
+	('$MANTIS_ANONYMOUS', 'Anonymous User', '$MANTIS_ANONYMOUS@localhost',
+	 MD5('123456'), '$COOKIE_STRING', '1', '1', 10, $TIMESTAMP, $TIMESTAMP);"
 
 
 # -----------------------------------------------------------------------------
@@ -53,22 +64,6 @@ function step () {
 
 # -----------------------------------------------------------------------------
 step "Travis Before Script initialization"
-
-# PHP version specific setup
-case $TRAVIS_PHP_VERSION in
-	5.6)
-		# Fix deprecated warning in PHP 5.6 builds:
-		# "Automatically populating $HTTP_RAW_POST_DATA is deprecated [...]"
-		# https://www.bram.us/2014/10/26/php-5-6-automatically-populating-http_raw_post_data-is-deprecated-and-will-be-removed-in-a-future-version/
-		# https://bugs.php.net/bug.php?id=66763
-		# Generate custom php.ini settings
-		cat <<-EOF >mantis_config.ini
-			always_populate_raw_post_data=-1
-			EOF
-		phpenv config-add mantis_config.ini
-		;;
-esac
-
 
 # -----------------------------------------------------------------------------
 step "Create database $MANTIS_DB_NAME"
@@ -155,6 +150,7 @@ echo "Creating project, versions and tags"
 $DB_CMD "$SQL_CREATE_PROJECT" $DB_CMD_SCHEMA
 $DB_CMD "$SQL_CREATE_VERSIONS" $DB_CMD_SCHEMA
 $DB_CMD "$SQL_CREATE_TAGS" $DB_CMD_SCHEMA
+$DB_CMD "$SQL_CREATE_ANONYMOUS_USER" $DB_CMD_SCHEMA
 
 echo "Creating API Token"
 TOKEN=$($myphp tests/travis_create_api_token.php)
@@ -181,6 +177,9 @@ cat <<-EOF >> $MANTIS_CONFIG
 	\$g_enable_product_build = ON;
 	\$g_enable_project_documentation = ON;
 	\$g_time_tracking_enabled = ON;
+	\$g_time_tracking_enabled = ON;
+	\$g_allow_anonymous_login = ON;
+  \$g_anonymous_account = '$MANTIS_ANONYMOUS';
 	EOF
 
 step "Before-script execution completed successfully"

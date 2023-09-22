@@ -23,8 +23,11 @@
  * @link http://www.mantisbt.org
  */
 
+use GuzzleHttp\Exception\GuzzleException;
+use PHPUnit\Framework\TestCase;
+
 # Includes
-require_once dirname( dirname( __FILE__ ) ) . '/TestConfig.php';
+require_once dirname( __FILE__, 2 ) . '/TestConfig.php';
 
 # MantisBT Core API
 require_mantis_core();
@@ -40,7 +43,7 @@ require_once __DIR__ . '/../core/Faker.php';
  * @requires extension curl
  * @group REST
  */
-class RestBase extends PHPUnit\Framework\TestCase {
+abstract class RestBase extends TestCase {
 	/**
 	 * @var string Base path for REST API
 	 */
@@ -94,7 +97,7 @@ class RestBase extends PHPUnit\Framework\TestCase {
 	 * setUp
 	 * @return void
 	 */
-	protected function setUp() {
+	protected function setUp(): void {
 		if( !isset( $GLOBALS['MANTIS_TESTSUITE_REST_ENABLED'] ) ||
 			!$GLOBALS['MANTIS_TESTSUITE_REST_ENABLED'] ) {
 			$this->markTestSkipped( 'The REST API tests are disabled.' );
@@ -130,19 +133,25 @@ class RestBase extends PHPUnit\Framework\TestCase {
 	/**
 	 * tearDown
 	 * @return void
+	 * @throws GuzzleException
 	 */
-	protected function tearDown() {
+	protected function tearDown(): void {
 		foreach( $this->usersToDelete as $t_user_id ) {
-			$t_response = $this->builder()->delete( '/users/' . $t_user_id, '' )->send();
-			$this->assertEquals( 204, $t_response->getStatusCode() );
+			$this->builder()
+				 ->delete( '/users/' . $t_user_id, '' )
+				 ->send();
 		}
 
 		foreach ( $this->issueIdsToDelete as $t_issue_id_to_delete ) {
-			$this->builder()->delete( '/issues', 'id=' . $t_issue_id_to_delete )->send();
+			$this->builder()
+				 ->delete( '/issues', 'id=' . $t_issue_id_to_delete )
+				 ->send();
 		}
 
 		foreach( $this->versionIdsToDelete as $t_version_id_to_delete ) {
-			$this->builder()->delete( '/projects/' . $t_version_id_to_delete[0] . '/versions/' . $t_version_id_to_delete[1] )->send();
+			$this->builder()
+				 ->delete( '/projects/' . $t_version_id_to_delete[0] . '/versions/' . $t_version_id_to_delete[1] )
+				 ->send();
 		}
 	}
 
@@ -196,6 +205,17 @@ class RestBase extends PHPUnit\Framework\TestCase {
 	}
 
 	/**
+	 * Marks a test as skipped if there is no configured Anonymous account.
+	 *
+	 * @return void
+	 */
+	protected function skipTestIfAnonymousDisabled(){
+		if( ! auth_anonymous_enabled() ) {
+			$this->markTestSkipped( 'Anonymous access is not enabled' );
+		}
+	}
+
+	/**
 	 * Registers an issue for deletion after the test method has run
 	 *
 	 * @param integer $p_issue_id Issue identifier.
@@ -233,10 +253,10 @@ class RestBase extends PHPUnit\Framework\TestCase {
 
 			if( isset( $t_body['users'] ) ) {
 				$t_users = $t_body['users'];
-				$t_user_id = (int)$t_users[0]['id'];	
-			} if( isset( $t_body['user'] ) ) {
+				$t_user_id = (int)$t_users[0]['id'];
+			} elseif( isset( $t_body['user'] ) ) {
 				$t_user = $t_body['user'];
-				$t_user_id = (int)$t_user['id'];	
+				$t_user_id = (int)$t_user['id'];
 			} else {
 				$t_user_id = (int)$t_body['id'];
 			}

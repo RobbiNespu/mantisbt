@@ -589,6 +589,7 @@ print_manage_menu( 'manage_proj_edit_page.php' );
 		$t_security_token = form_security_token( 'manage_proj_ver_delete' );
 		foreach ( $t_versions as $t_version ) {
 			$t_inherited = $t_version['project_id'] != $f_project_id;
+			/** @noinspection PhpUnhandledExceptionInspection */
 			$t_name = version_full_name( $t_version['id'], $t_inherited, $f_project_id );
 			$t_released = $t_version['released'];
 			$t_obsolete = $t_version['obsolete'];
@@ -1066,8 +1067,8 @@ if( count( $t_users ) > 0 ) { ?>
 		<div class="widget-body">
 		<div class="widget-main no-padding">
 		<div class="table-responsive">
+        <fieldset>
 		<table class="table table-bordered table-condensed table-striped">
-		<fieldset>
 			<?php echo form_security_field( 'manage_proj_user_add' ) ?>
 			<input type="hidden" name="project_id" value="<?php echo $f_project_id ?>" />
 			<tr>
@@ -1106,8 +1107,8 @@ if( count( $t_users ) > 0 ) { ?>
 					</select>
 				</td>
 			</tr>
-		</fieldset>
 		</table>
+        </fieldset>
 		</div>
 		</div>
 		</div>
