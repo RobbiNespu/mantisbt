@@ -23,15 +23,19 @@
  * @link http://www.mantisbt.org
  */
 
+use GuzzleHttp\Exception\GuzzleException;
+use PHPUnit\Framework\TestCase;
+
 # Includes
-require_once dirname( dirname( __FILE__ ) ) . '/TestConfig.php';
+require_once dirname( __FILE__, 2 ) . '/TestConfig.php';
 
 # MantisBT Core API
 require_mantis_core();
 
 require_once( __DIR__ . '/../../vendor/autoload.php' );
 require_once ( __DIR__ . '/../../core/constant_inc.php' );
-
+require_once __DIR__ . '/../core/RequestBuilder.php';
+require_once __DIR__ . '/../core/Faker.php';
 
 /**
  * Base class for REST API test cases
@@ -39,7 +43,7 @@ require_once ( __DIR__ . '/../../core/constant_inc.php' );
  * @requires extension curl
  * @group REST
  */
-class RestBase extends PHPUnit\Framework\TestCase {
+abstract class RestBase extends TestCase {
 	/**
 	 * @var string Base path for REST API
 	 */
@@ -81,10 +85,19 @@ class RestBase extends PHPUnit\Framework\TestCase {
 	private $issueIdsToDelete = array();
 
 	/**
+	 * @var array Array of version IDs to delete
+	 */
+	private $versionIdsToDelete = array();
+
+	/**
+	 * @var array List of user ids to delete in tearDown()
+	 */
+	private $usersToDelete = array();
+	/**
 	 * setUp
 	 * @return void
 	 */
-	protected function setUp() {
+	protected function setUp(): void {
 		if( !isset( $GLOBALS['MANTIS_TESTSUITE_REST_ENABLED'] ) ||
 			!$GLOBALS['MANTIS_TESTSUITE_REST_ENABLED'] ) {
 			$this->markTestSkipped( 'The REST API tests are disabled.' );
@@ -120,47 +133,40 @@ class RestBase extends PHPUnit\Framework\TestCase {
 	/**
 	 * tearDown
 	 * @return void
+	 * @throws GuzzleException
 	 */
-	protected function tearDown() {
+	protected function tearDown(): void {
+		foreach( $this->usersToDelete as $t_user_id ) {
+			$this->builder()
+				 ->delete( '/users/' . $t_user_id, '' )
+				 ->send();
+		}
+
 		foreach ( $this->issueIdsToDelete as $t_issue_id_to_delete ) {
-			$this->delete( '/issues', 'id=' . $t_issue_id_to_delete );
+			$this->builder()
+				 ->delete( '/issues', 'id=' . $t_issue_id_to_delete )
+				 ->send();
+		}
+
+		foreach( $this->versionIdsToDelete as $t_version_id_to_delete ) {
+			$this->builder()
+				 ->delete( '/projects/' . $t_version_id_to_delete[0] . '/versions/' . $t_version_id_to_delete[1] )
+				 ->send();
 		}
 	}
 
-	protected function delete( $p_relative_path, $p_query_string ) {
-		$t_client = new \GuzzleHttp\Client();
-		$t_options = array(
-			'allow_redirects' => false,
-			'http_errors' => false,
-			'headers' => array(
-				'Authorization' => $this->token,
-			),
-		);
-
-		return $t_client->request( 'DELETE', $this->base_path . $p_relative_path . '?' . $p_query_string, $t_options );
-	}
-
 	/**
-	 * @param string $p_relative_path The relative path under `/api/rest/` e.g. `/issues`.
-	 * @param mixed $p_payload The payload object, it will be json encoded before sending.
-	 * @return mixed|string The response object.
+	 * Creates a RequestBuilder instance for building a http request.
+	 *
+	 * @return RequestBuilder
 	 */
-	protected function post( $p_relative_path, $p_payload ) {
-		$t_client = new \GuzzleHttp\Client();
-		$t_options = array(
-			'allow_redirects' => false,
-			'http_errors' => false,
-			'json' => $p_payload,
-			'headers' => array(
-				'Authorization' => $this->token,
-			),
-		);
-
-		return $t_client->request( 'POST', $this->base_path . $p_relative_path, $t_options );
+	public function builder() {
+		return new RequestBuilder( $this->base_path, $this->token );
 	}
 
 	/**
-	 * return integer The default project id.
+	 * Gets the id of the default project used for testing.
+	 *
 	 * @return integer
 	 */
 	protected function getProjectId() {
@@ -168,7 +174,7 @@ class RestBase extends PHPUnit\Framework\TestCase {
 	}
 
 	/**
-	 * return string The default category.
+	 * Gets the default category used for testing.
 	 * @return string
 	 */
 	protected function getCategory() {
@@ -199,13 +205,66 @@ class RestBase extends PHPUnit\Framework\TestCase {
 	}
 
 	/**
+	 * Marks a test as skipped if there is no configured Anonymous account.
+	 *
+	 * @return void
+	 */
+	protected function skipTestIfAnonymousDisabled(){
+		if( ! auth_anonymous_enabled() ) {
+			$this->markTestSkipped( 'Anonymous access is not enabled' );
+		}
+	}
+
+	/**
 	 * Registers an issue for deletion after the test method has run
 	 *
 	 * @param integer $p_issue_id Issue identifier.
 	 * @return void
 	 */
-	protected function deleteAfterRun( $p_issue_id ) {
+	protected function deleteIssueAfterRun( $p_issue_id ) {
 		$this->issueIdsToDelete[] = $p_issue_id;
+	}
+
+	/**
+	 * Registers a version id to be deleted in tearDown
+	 *
+	 * @param integer $p_version_id Version identifier.
+	 * @return void
+	 */
+	protected function deleteAfterRunVersion( $p_version_id, $p_project_id = null ) {
+		if( is_null( $p_project_id ) ) {
+			$p_project_id = $this->getProjectId();
+		}
+
+		$this->versionIdsToDelete[] = array( $p_project_id, $p_version_id );
+	}
+
+	/**
+	 * Capture user id to be deleted in tearDown
+	 *
+	 * return int|bool The user id or false if no user was created.
+	 */
+	protected function deleteAfterRunUserIfCreated( $p_response ) {
+		$t_user_id = false;
+		$t_response_code = $p_response->getStatusCode();
+
+		if( $t_response_code >= 200 && $t_response_code < 300 ) {
+			$t_body = json_decode( $p_response->getBody(), true );
+
+			if( isset( $t_body['users'] ) ) {
+				$t_users = $t_body['users'];
+				$t_user_id = (int)$t_users[0]['id'];
+			} elseif( isset( $t_body['user'] ) ) {
+				$t_user = $t_body['user'];
+				$t_user_id = (int)$t_user['id'];
+			} else {
+				$t_user_id = (int)$t_body['id'];
+			}
+
+			$this->usersToDelete[] = $t_user_id;
+		}
+
+		return $t_user_id;
 	}
 
 	/**

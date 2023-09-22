@@ -54,6 +54,7 @@
  * @author דגש
  * @author דגש חזק
  * @author ישראל קלר
+ * @author נדב ס
  */
 
 $s_directionality = 'rtl';
@@ -119,7 +120,7 @@ $s_stays_on_top = 'תמיד עליון';
 $s_bugnote_link_title = 'קישור ישיר להערה';
 $s_delete_bugnote_button = 'מחיקת הערה';
 $s_delete_bugnote_sure_msg = 'האם למחוק הערה זו?';
-$s_bug_relationships = 'קישרי-גומלין';
+$s_bug_relationships = 'קשרי־גומלין';
 $s_empty_password_sure_msg = 'ססמת החשבון ריקה. האם זו אכן הכוונה?';
 $s_empty_password_button = 'שימוש בססמה ריקה';
 $s_reauthenticate_title = 'הזדהות';
@@ -177,9 +178,9 @@ $s_due_date_bugs_conf_msg = 'עדכון תאריך תחולה ל־';
 $s_close_group_bugs_button = 'סגירת סוגיות';
 $s_delete_group_bugs_button = 'מחיקת סוגיות';
 $s_move_group_bugs_button = 'העברת סוגיות';
-$s_copy_group_bugs_button = 'העתקת סוגיה';
+$s_copy_group_bugs_button = 'העתקת סוגיות';
 $s_assign_group_bugs_button = 'הקצאת סוגיות';
-$s_resolve_group_bugs_button = 'פתרון סוגיה';
+$s_resolve_group_bugs_button = 'פתרון סוגיות';
 $s_priority_group_bugs_button = 'עדיפות עדכון';
 $s_status_group_bugs_button = 'מצב עדכון';
 $s_category_group_bugs_button = 'עדכון סוג־אב';
@@ -198,7 +199,7 @@ $s_printing_options_link = 'אפשרויות הדפסה';
 $s_bugnote_title = 'כותב הערה';
 $s_bugnote_date = 'תאריך הערה';
 $s_bugnote_description = 'תוכן הערה';
-$s_error_no_proceed = 'נא ללחוץ על כפתור „חזרה” של הדפדפן כדי לחזור לעמוד הקודם. שם עליך לתקן את הדרוש לפי הודעת השגיאה לעיל. כמו־כן באפשרותך לבצע פעולה אחרת או לעבור למסך אחר דרך התפריט הראשי.';
+$s_error_no_proceed = 'נא ללחוץ על כפתור „חזרה” של הדפדפן כדי לחזור לעמוד הקודם. שם עליך לתקן את הדרוש לפי הודעת השגיאה לעיל. באפשרותך גם לבצע פעולה אחרת או לעבור למסך אחר דרך התפריט הראשי.';
 $s_login_error = 'יתכן שהחשבון הושבת, נחסם או שהשם/הססמה שהוזנו שגויים.';
 $s_login_cookies_disabled = 'הדפדפן שלך אינו תומך ב-Cookies, או שהוגדר לסרב להן.';
 $s_logged_in_as = 'התחברות כ-';
@@ -761,10 +762,10 @@ $s_reset_password_msg2 = 'איפוס הסיסמה מוחק את הסיסמה ה�
 $s_show_all_users = 'כולם';
 $s_users_unused = 'לא בשימוש';
 $s_users_new = 'חדש';
+$s_email_not_unique = 'כתובת דואר אלקטרוני שמשויכת לפחות לחשבון משתמש אחד';
 $s_account_reset_msg = 'הודעת אישור נשלחה לכתובת דוא״ל של המשתמש שנבחר. בכך, המשתמש יוכל לשנות את הססמה שלו.';
 $s_account_reset_msg2 = 'ססמת החשבון הוגדרה כריקה...';
 $s_account_unlock_msg = 'נעילת חשבון שוחררה.';
-$s_manage_user_protected_msg = 'חשבון מוגן; לא ניתן להסגיל שדות \'רמת גישה\' ו\'מאופשר\'. שדות אחרים עודכנו בהצלחה.';
 $s_manage_user_updated_msg = 'חשבון עודכן בהצלחה...';
 $s_email_user_updated_subject = 'חשבון עודכן';
 $s_email_user_updated_msg = 'החשבון עודכן על־ידי מנהלן. רשימת השינויים הללו מוצגת מטה. ניתן לעדכן את פרטי החשבון והעדפות בכל עת על־ידי ביקור במען URL הבא:';
@@ -1253,8 +1254,7 @@ $s_timeline_issue_note_created = '<span class="username">%1$s</span> הגיב/ה
 $s_timeline_issue_monitor = '<span class="username">%1$s</span> מנטר/ת סוגיה <span class="issue_id">%2$s</span>';
 $s_timeline_issue_unmonitor = '<span class="username">%1$s</span> הפסיק/ה לנטר סוגיה <span class="issue_id">%2$s</span>';
 $s_timeline_issue_tagged = '<span class="username">%1$s</span> סוגיה מתוייגת <span class="tag_name">%2$s</span> עם <span class="tag_name">%3$s</span>';
-$s_timeline_issue_untagged = '
-<span class="username">%1$s</span>תג הוסר<span class="tag_name">%3$s</span>מ־<span class="issue_id">%2$s</span>';
+$s_timeline_issue_untagged = '<span class="username">%1$s</span>תג הוסר<span class="tag_name">%3$s</span>מ־<span class="issue_id">%2$s</span>';
 $s_timeline_issue_resolved = '<span class="username">%1$s</span> פתר/ה סוגיה <span class="issue_id">%2$s</span>';
 $s_timeline_issue_closed = '<span class="username">%1$s</span> סגר/ה סוגיה <span class="issue_id">%2$s</span>';
 $s_timeline_issue_reopened = '<span class="username">%1$s</span> פתח/ה סוגיה <span class="issue_id">%2$s</span> מחדש';
@@ -1395,7 +1395,6 @@ $MANTIS_ERROR[ERROR_SESSION_VAR_NOT_FOUND] = 'משנתה השיח „%1$s” ל�
 $MANTIS_ERROR[ERROR_SESSION_NOT_VALID] = 'השיח שלך איבד את תקינותו.';
 $MANTIS_ERROR[ERROR_FORM_TOKEN_INVALID] = 'אסימון שליחת טופס בלתי־תקין. זה היה יכול להיגרם על־ידי פקיעת זמן השיחה או שליחה של הטופס פעמיים.';
 $MANTIS_ERROR[ERROR_CRYPTO_MASTER_SALT_INVALID] = 'מטעמי אבטחה MantisBT לא יפעל כאשר $ g_crypto_master_salt לא הוגדר כהלכה ב־config_inc.php או שאורכו קצר מ־16 תווים.';
-$MANTIS_ERROR[ERROR_CRYPTO_CAN_NOT_GENERATE_STRONG_RANDOMNESS] = 'לא ניתן למצוא מקור לאקראיות חזקה למטרות הצפנה.';
 $MANTIS_ERROR[ERROR_INVALID_REQUEST_METHOD] = 'לא ניתן לגשת לדף הזה בשיטה הזאת.';
 $MANTIS_ERROR[ERROR_INVALID_SORT_FIELD] = 'שדה מיון לא תקין.';
 $MANTIS_ERROR[ERROR_INVALID_DATE_FORMAT] = 'תבנית תאריך לא תקין';
@@ -1410,6 +1409,7 @@ $MANTIS_ERROR[ERROR_FIELD_TOO_LONG] = 'הערך בשדה "%1$s" חייב להי�
 $MANTIS_ERROR[ERROR_API_TOKEN_NAME_NOT_UNIQUE] = 'שם אסימון "%s" API נמצא כבר בשימוש. נא לחזור ולבחר אחד אחר.';
 $MANTIS_ERROR[ERROR_LOGFILE_NOT_WRITABLE] = 'הקובץ שצוין ב־ $g_log_destination "%s" לא ניתן לכתיבה.';
 $MANTIS_ERROR[ERROR_MONITOR_ACCESS_TOO_LOW] = 'למשתמש שנוסף אין מספיק הרשאות גישה כדי לעקוב אחר התקלה הזאת.';
+$MANTIS_ERROR[ERROR_USER_TOKEN_NOT_FOUND] = 'לא נמצא אסימון API למשתמש עם המזהה "%d".';
 $s_dropzone_default_message = 'נא לצרף קבצים על־ידי \'גרירה ושחרור\', בחירה או הדבקה.';
 $s_dropzone_fallback_message = 'הדפדפן אינו תומך בתכונת "גרירה ושחרור" להאלעת קבצים.';
 $s_dropzone_file_too_big = 'הקובץ הזה גדול מדי ({{filesize}} MiB). הגודל המרבי הוא: {{maxFilesize}} MiB.';

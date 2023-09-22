@@ -35,7 +35,7 @@ define( 'GOOD', 1 );
 define( 'WARN', 2 );
 
 # PHP-related constants
-define( 'PHP_MIN_VERSION', '7.0.0' );
+define( 'PHP_MIN_VERSION', '7.2.5' );
 define( 'PHP_CLI', 0 );
 define( 'PHP_CGI', 1 );
 
@@ -325,6 +325,7 @@ define( 'ERROR_USER_CURRENT_PASSWORD_MISMATCH', 812 );
 define( 'ERROR_USER_EMAIL_NOT_UNIQUE', 813 );
 define( 'ERROR_USER_BY_EMAIL_NOT_FOUND', 814 );
 define( 'ERROR_USER_BY_REALNAME_NOT_FOUND', 815 );
+define( 'ERROR_USER_TOKEN_NOT_FOUND', 816 );
 
 # ERROR_AUTH_*
 define( 'ERROR_AUTH_INVALID_COOKIE', 900 );
@@ -439,7 +440,6 @@ define( 'ERROR_FORM_TOKEN_INVALID', 2800 );
 
 # ERROR_CRYPTO_*
 define( 'ERROR_CRYPTO_MASTER_SALT_INVALID', 2900 );
-define( 'ERROR_CRYPTO_CAN_NOT_GENERATE_STRONG_RANDOMNESS', 2901 );
 
 # ERROR_API_TOKEN_*
 define( 'ERROR_API_TOKEN_NAME_NOT_UNIQUE', 3000 );

@@ -966,6 +966,7 @@ $s_reset_password_msg2 = 'Reset Password resets the password to be blank.';
 $s_show_all_users = 'All';
 $s_users_unused = 'Unused';
 $s_users_new = 'New';
+$s_email_not_unique = 'Email address is associated with at least one other user account';
 
 # manage_user_reset.php
 $s_account_reset_msg = 'A confirmation request has been sent to the selected user\'s e-mail address. Using this, the user will be able to change their password.';
@@ -973,7 +974,6 @@ $s_account_reset_msg2 = 'Account password has been set to blank...';
 $s_account_unlock_msg = 'The account has been unlocked.';
 
 # manage_user_update.php
-$s_manage_user_protected_msg = 'Account protected; the \'Access Level\' and \'Enabled\' fields cannot be modified. Other fields were successfully updated.';
 $s_manage_user_updated_msg = 'Account successfully updated...';
 $s_email_user_updated_subject = 'Account updated';
 $s_email_user_updated_msg = 'Your account has been updated by an administrator. A list of these changes is provided below. You can update your account details and preferences at any time by visiting the following URL:';
@@ -1736,7 +1736,6 @@ $MANTIS_ERROR[ERROR_SESSION_VAR_NOT_FOUND] = 'Session variable "%1$s" not found.
 $MANTIS_ERROR[ERROR_SESSION_NOT_VALID] = 'Your session has become invalidated.';
 $MANTIS_ERROR[ERROR_FORM_TOKEN_INVALID] = 'Invalid form security token. This could be caused by a session timeout, or accidentally submitting the form twice.';
 $MANTIS_ERROR[ERROR_CRYPTO_MASTER_SALT_INVALID] = 'For security reasons MantisBT will not operate when $g_crypto_master_salt is not specified correctly in config_inc.php or is shorter than 16 characters long.';
-$MANTIS_ERROR[ERROR_CRYPTO_CAN_NOT_GENERATE_STRONG_RANDOMNESS] = 'Unable to find a source of strong randomness for cryptographic purposes.';
 $MANTIS_ERROR[ERROR_INVALID_REQUEST_METHOD] = 'This page cannot be accessed using this method.';
 $MANTIS_ERROR[ERROR_INVALID_SORT_FIELD] = 'Invalid sort field.';
 $MANTIS_ERROR[ERROR_INVALID_DATE_FORMAT] = 'Invalid date format.';
@@ -1751,7 +1750,7 @@ $MANTIS_ERROR[ERROR_FIELD_TOO_LONG] = 'Field "%1$s" must be shorter or equal to 
 $MANTIS_ERROR[ERROR_API_TOKEN_NAME_NOT_UNIQUE] = 'API token name "%s" is already being used. Please go back and select another one.';
 $MANTIS_ERROR[ERROR_LOGFILE_NOT_WRITABLE] = 'The file specified in $g_log_destination "%s" is not writable.';
 $MANTIS_ERROR[ERROR_MONITOR_ACCESS_TOO_LOW] = 'Added user does not have sufficient access rights to monitor this issue.';
-
+$MANTIS_ERROR[ERROR_USER_TOKEN_NOT_FOUND] = 'User API token with id "%d" not found.';
 
 # dropzone.js - placeholders format is defined by the library
 $s_dropzone_default_message = 'Attach files by dragging & dropping, selecting or pasting them.';

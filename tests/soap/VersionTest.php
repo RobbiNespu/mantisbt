@@ -41,7 +41,7 @@ class VersionTest extends SoapBase {
 	/**
 	 * Sets up the fixture.
 	 */
-	public function setUp() {
+	public function setUp(): void {
 		parent::setUp();
 
 		# Define the test version's date order (used for assertion)
@@ -59,7 +59,7 @@ class VersionTest extends SoapBase {
 			'released' => true,
 			'description' => 'Test version',
 			'obsolete' => false,
-			'date_order'=> $this->date_order,
+			'date_order' => $this->date_order
 		);
 	}
 

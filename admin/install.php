@@ -287,17 +287,8 @@ if( $t_config_exists ) {
 
 if( 0 == $t_install_state ) {
 	?>
-
-<!-- Check PHP Version -->
+<!-- Check UTF-8 support -->
 <?php
-	print_test(
-		'Checking PHP version (your version is ' . phpversion() . ')',
-		check_php_version( phpversion() ),
-		true,
-		'Upgrade to a more recent version of PHP'
-	);
-
-	# UTF-8 support check
 	# We need the 'mbstring' extension
 	print_test(
 		'Checking UTF-8 support',
@@ -1237,13 +1228,8 @@ if( 5 == $t_install_state ) {
 	# Generating the config_inc.php file
 
 	# Automatically generate a strong master salt/nonce for MantisBT
-	# cryptographic purposes. If a strong source of randomness is not
-	# available the user will have to manually set this value post
-	# installation.
-	$t_crypto_master_salt = crypto_generate_random_string( 32 );
-	if( $t_crypto_master_salt !== null ) {
-		$t_crypto_master_salt = base64_encode( $t_crypto_master_salt );
-	}
+	# cryptographic purposes.
+	$t_crypto_master_salt = base64_encode( random_bytes( 32 ) );
 
 	$t_config = '<?php' . PHP_EOL
 		. '$g_hostname               = \'' . addslashes( $f_hostname ) . '\';' . PHP_EOL
@@ -1305,12 +1291,6 @@ if( 5 == $t_install_state ) {
 	?>
 </tr>
 <?php
-	if( $t_crypto_master_salt === null ) {
-		print_test( 'Setting Cryptographic salt in config file', false, false,
-					'Unable to find a random number source for cryptographic purposes. You will need to edit ' .
-					$t_config_filename . ' and set a value for $g_crypto_master_salt manually' );
-	}
-
 	if( true == $t_write_failed ) {
 ?>
 <tr>
