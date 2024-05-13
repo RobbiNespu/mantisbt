@@ -103,9 +103,6 @@ function print_header_redirect( $p_url, $p_die = true, $p_sanitize = false, $p_a
 		layout_page_header( null, $p_url );
 		layout_page_begin();
 		html_operation_successful( $p_url );
-		echo '<br /><div class="center">';
-		print_link_button( $p_url, lang_get( 'proceed' ) );
-		echo '</div>';
 		layout_page_end();
 		return false;
 	}
@@ -752,22 +749,35 @@ function print_profile_option_list_from_profiles( array $p_profiles, $p_select_i
 }
 
 /**
+ * Print categories option list.
+ *
  * Since categories can be orphaned we need to grab all unique instances of category
  * We check in the project category table and in the bug table
- * We put them all in one array and make sure the entries are unique
+ * We put them all in one array and make sure the entries are unique.
  *
- * @param integer $p_category_id A category identifier.
- * @param integer $p_project_id  A project identifier.
+ * @param integer $p_category_id  A category identifier.
+ * @param null    $p_project_id   A project identifier.
+ * @param bool    $p_enabled_only True to exclude disabled categories.
+ *
  * @return void
  */
-function print_category_option_list( $p_category_id = 0, $p_project_id = null ) {
+function print_category_option_list( $p_category_id = 0, $p_project_id = null, $p_enabled_only = false ) {
 	if( null === $p_project_id ) {
 		$t_project_id = helper_get_current_project();
 	} else {
 		$t_project_id = $p_project_id;
 	}
 
-	$t_cat_arr = category_get_all_rows( $t_project_id, null, true );
+	$t_cat_arr = category_get_all_rows( $t_project_id, null, true, $p_enabled_only );
+
+	# Add the current category if it is not in the list
+	if( $p_category_id != 0
+        && !in_array( $p_category_id, array_column( $t_cat_arr, 'id' ) )
+    ) {
+		$t_category_row = category_get_row( $p_category_id );
+		$t_category_row['project_name'] = project_get_name( $t_category_row['project_id'] );
+		$t_cat_arr[] = $t_category_row;
+	}
 
 	if( config_get( 'allow_no_category' ) ) {
 		echo '<option value="0"';
@@ -791,12 +801,17 @@ function print_category_option_list( $p_category_id = 0, $p_project_id = null ) 
 
 	foreach( $t_cat_arr as $t_category_row ) {
 		$t_category_id = (int)$t_category_row['id'];
+		$t_disabled = $t_category_row['status'] == CATEGORY_STATUS_DISABLED;
 		$t_category_name = category_full_name(
 			$t_category_id,
 			$t_category_row['project_id'] != $t_project_id
 		);
+		if( $t_disabled ) {
+//			$t_category_name .= ' [' . lang_get( 'disabled' ) . ']';
+		}
 		echo '<option value="' . $t_category_id . '"';
 		check_selected( $p_category_id, $t_category_id );
+		check_disabled( $t_disabled );
 		echo '>';
 		echo string_attribute( $t_category_name ), '</option>', PHP_EOL;
 	}
@@ -879,7 +894,7 @@ function print_os_build_option_list( $p_os_build, $p_user_id = null ) {
  *
  * @param string              $p_version       The currently selected version.
  * @param integer|array|null  $p_project_ids   A project id, or array of ids, or null to use current project.
- * @param integer             $p_released      One of VERSION_ALL, VERSION_FUTURE or VERSION_RELEASED
+ * @param bool|null           $p_released      One of VERSION_ALL, VERSION_FUTURE or VERSION_RELEASED
  *                                             to define which versions to include in the list (defaults to ALL).
  * @param boolean $p_leading_blank Allow selection of no version.
  *
@@ -1347,7 +1362,12 @@ function print_view_bug_sort_link( $p_string, $p_sort_field, $p_sort, $p_dir, $p
 			$t_sort_field = rawurlencode( $p_sort_field );
 			$t_print_parameter = ( $p_columns_target == COLUMNS_TARGET_PRINT_PAGE ) ? '&print=1' : '';
 			$t_filter_parameter = filter_is_temporary( $g_filter ) ? filter_get_temporary_key_param( $g_filter ) . '&' : '';
-			print_link( 'view_all_set.php?' . $t_filter_parameter . 'sort_add=' . $t_sort_field . '&dir_add=' . $p_dir . '&type=' . FILTER_ACTION_PARSE_ADD . $t_print_parameter, $p_string );
+			$t_url = 'view_all_set.php?' . $t_filter_parameter
+				. 'sort_add=' . $t_sort_field
+				. '&dir_add=' . $p_dir
+				. '&type=' . FILTER_ACTION_PARSE_ADD
+				. $t_print_parameter;
+			print_link( $t_url, $p_string );
 			break;
 		default:
 			echo $p_string;
@@ -1382,8 +1402,13 @@ function print_manage_user_sort_link( $p_page, $p_string, $p_field, $p_dir, $p_s
 	}
 
 	$t_field = rawurlencode( $p_field );
-	print_link( $p_page . '?sort=' . $t_field . '&dir=' . $t_dir . '&save=1&hideinactive=' . $p_hide_inactive . '&showdisabled=' . $p_show_disabled . '&filter=' . $p_filter . '&search=' . $p_search,
-        $p_string, false, $p_class );
+	print_link(
+		$p_page . '?sort=' . $t_field . '&dir=' . $t_dir . '&save=1&hideinactive=' . $p_hide_inactive
+		. '&showdisabled=' . $p_show_disabled . '&filter=' . $p_filter . '&search=' . $p_search,
+		$p_string,
+		false,
+		$p_class
+	);
 }
 
 /**
@@ -1487,25 +1512,28 @@ function print_bracket_link_prepared( $p_link ) {
 }
 
 /**
- * print a HTML link
- * @param string  $p_link       The page URL.
- * @param string  $p_url_text   The displayed text for the link.
+ * Print a HTML link.
+ *
+ * @param string  $p_link       The target URL.
+ * @param string  $p_url_text   Displayed text for the link, will be escaped prior to display.
  * @param boolean $p_new_window Whether to open in a new window.
  * @param string  $p_class      The CSS class of the link.
+ *
  * @return void
  */
 function print_link( $p_link, $p_url_text, $p_new_window = false, $p_class = '' ) {
+	$t_url_text = string_attribute( $p_url_text );
 	if( is_blank( $p_link ) ) {
-		echo $p_url_text;
+		echo $t_url_text;
 	} else {
 		$t_link = htmlspecialchars( $p_link );
 		if( $p_new_window === true ) {
-			echo '<a class="new-window ' . $p_class . '" href="' . $t_link . '" target="_blank">' . $p_url_text . '</a>';
+			echo '<a class="new-window ' . $p_class . '" href="' . $t_link . '" target="_blank">' . $t_url_text . '</a>';
 		} else {
 			if( $p_class !== '' ) {
-				echo '<a class="' . $p_class . '" href="' . $t_link . '">' . $p_url_text . '</a>';
+				echo '<a class="' . $p_class . '" href="' . $t_link . '">' . $t_url_text . '</a>';
 			} else {
-				echo '<a href="' . $t_link . '">' . $p_url_text . '</a>';
+				echo '<a href="' . $t_link . '">' . $t_url_text . '</a>';
 			}
 		}
 	}
@@ -1614,7 +1642,7 @@ function print_page_links( $p_page, $p_start, $p_end, $p_current, $p_temp_filter
 	if( $p_current < $p_end ) {
 		print_page_link( $p_page, $t_next, $p_current + 1, $p_current, $p_temp_filter_key );
 	} else {
-		print_page_link( $p_page, $t_next, null, null, $p_temp_filter_key );
+		print_page_link( $p_page, $t_next, 0, 0, $p_temp_filter_key );
 	}
 
 	# Page numbers ...
@@ -1712,7 +1740,7 @@ function print_hidden_inputs( array $p_assoc_array ) {
  * Print hidden html input tag <input type=hidden>
  *
  * @param string $p_field_key Name parameter.
- * @param string $p_field_val Value parameter.
+ * @param string|array $p_field_val Value parameter.
  * @return void
  */
 function print_hidden_input( $p_field_key, $p_field_val ) {
@@ -1853,7 +1881,7 @@ function get_dropdown( array $p_control_array, $p_control_name, $p_match = '', $
 	}
 	$t_info = sprintf( '<select class="input-sm" %s name="%s" id="%s"%s>', $t_multiple, $p_control_name, $p_control_name, $t_size );
 	if( $p_add_any ) {
-		array_unshift_assoc( $p_control_array, META_FILTER_ANY, lang_trans( '[any]' ) );
+		array_unshift( $p_control_array, [ META_FILTER_ANY => '[any]' ] );
 	}
 	foreach ( $p_control_array as $t_name => $t_desc ) {
 		$t_sel = '';

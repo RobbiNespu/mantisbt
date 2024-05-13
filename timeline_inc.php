@@ -14,7 +14,10 @@
 # You should have received a copy of the GNU General Public License
 # along with MantisBT.  If not, see <http://www.gnu.org/licenses/>.
 
-require_once( 'core.php' );
+if( !defined( 'TIMELINE_INC_ALLOW' ) ) {
+	return;
+}
+
 require_api( 'timeline_api.php' );
 
 define( 'MAX_EVENTS', 50 );

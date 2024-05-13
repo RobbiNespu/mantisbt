@@ -86,7 +86,18 @@ class MantisGraphPlugin extends MantisPlugin  {
 	}
 
 	/**
-	 * Plugin events
+	 * Plugin events.
+	 *
+	 * - EVENT_MANTISGRAPH_SUBMENU (Default): allows 3rd-party plugins to add
+	 *   additional graphs {@see https://mantisbt.org/bugs/view.php?id=26139#c62802}.
+	 *   NOTE: If the child plugin wishes to use the chart.js library to display
+	 *   its graphs, then it is responsible to
+	 *     1. include the library as appropriate for its needs
+	 *        (the {@see include_chartjs()} method can be used for this purpose)
+	 *     2. initialize the <canvas> elements containing the graphs
+	 *   This is typically done in the hook for EVENT_LAYOUT_RESOURCES,
+	 *   ({@see resources()} method for details).
+	 *
 	 * @return array
 	 */
 	function events() {
@@ -227,7 +238,7 @@ class MantisGraphPlugin extends MantisPlugin  {
 	 */
 	function summary_menu() {
 		$t_menu_items[] = '<a href="'
-			. $this->get_url_with_filter( 'developer_graph.php' )
+			. $this->get_url_with_filter( 'project_graph.php' )
 			. '">'
 			. plugin_lang_get( 'tab_label' )
 			. '</a>';
@@ -239,6 +250,11 @@ class MantisGraphPlugin extends MantisPlugin  {
 	 */
 	function print_submenu() {
 		$t_menu_items = array(
+			'project_graph.php' => array(
+				'icon' => 'fa-bar-chart',
+				'label' => lang_get( 'by_project' ),
+				'url' => $this->get_url_with_filter( 'project_graph.php' ),
+			),
 			'developer_graph.php' => array(
 				'icon' => 'fa-bar-chart',
 				'label' => lang_get( 'by_developer' ),

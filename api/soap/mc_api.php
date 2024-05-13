@@ -279,7 +279,7 @@ class ApiObjectFactory {
 			case ERROR_BUG_READ_ONLY_ACTION_DENIED:
 			case ERROR_LDAP_AUTH_FAILED:
 			case ERROR_LDAP_USER_NOT_FOUND:
-			case ERROR_CATEGORY_CANNOT_DELETE_DEFAULT:
+			case ERROR_CATEGORY_CANNOT_UPDATE_DEFAULT:
 			case ERROR_CATEGORY_CANNOT_DELETE_HAS_ISSUES:
 			case ERROR_SPONSORSHIP_HANDLER_ACCESS_LEVEL_TOO_LOW:
 			case ERROR_SPONSORSHIP_ASSIGNER_ACCESS_LEVEL_TOO_LOW:
@@ -887,18 +887,7 @@ function mci_user_get_accessible_subprojects( $p_user_id, $p_parent_project_id, 
 
 	$t_result = array();
 	foreach( user_get_accessible_subprojects( $p_user_id, $p_parent_project_id ) as $t_subproject_id ) {
-		$t_subproject_row = project_cache_row( $t_subproject_id );
-		$t_subproject = array();
-		$t_subproject['id'] = $t_subproject_id;
-		$t_subproject['name'] = $t_subproject_row['name'];
-		$t_subproject['status'] = mci_enum_get_array_by_id( $t_subproject_row['status'], 'project_status', $t_lang );
-		$t_subproject['enabled'] = $t_subproject_row['enabled'];
-		$t_subproject['view_state'] = mci_enum_get_array_by_id( $t_subproject_row['view_state'], 'project_view_state', $t_lang );
-		$t_subproject['access_min'] = mci_enum_get_array_by_id( $t_subproject_row['access_min'], 'access_levels', $t_lang );
-		$t_subproject['file_path'] = array_key_exists( 'file_path', $t_subproject_row ) ? $t_subproject_row['file_path'] : '';
-		$t_subproject['description'] = array_key_exists( 'description', $t_subproject_row ) ? $t_subproject_row['description'] : '';
-		$t_subproject['subprojects'] = mci_user_get_accessible_subprojects( $p_user_id, $t_subproject_id, $t_lang );
-		$t_result[] = $t_subproject;
+		$t_result[] = mci_project_get_row( $t_subproject_id, $p_user_id, $t_lang );
 	}
 
 	return $t_result;
@@ -932,14 +921,17 @@ function mci_get_version( $p_version, $p_project_id ) {
 }
 
 /**
- * Gets the version id based on version input from the API.  This can be
- * a string or an object (with id or name or both).  If both id and name
- * exist on the object, id takes precedence.
+ * Gets the version id based on version input from the API.
  *
- * @param string|object $p_version The version string or object with name or id or both.
- * @param int $p_project_id The project id.
- * @param string $p_field_name Version field name (e.g. version, target_version, fixed_in_version)
- * @return int|RestFault|SoapFault The version id, 0 if not supplied.
+ * @param string|object $p_version    The version string or an object with id
+ *                                    or name; if both id and name are provided,
+ *                                    id takes precedence.
+ * @param int           $p_project_id The project id.
+ * @param string        $p_field_name Version field name (e.g. version,
+ *                                    target_version, fixed_in_version)
+ *
+ * @return int The version id, 0 if not supplied.
+ * @throws ClientException
  */
 function mci_get_version_id( $p_version, $p_project_id, $p_field_name = 'version' ) {
 	$t_version_id = 0;
@@ -969,7 +961,7 @@ function mci_get_version_id( $p_version, $p_project_id, $p_field_name = 'version
 			throw new ClientException(
 				"Version '$t_version_for_error' does not exist in project '$t_project_name'.",
 				ERROR_INVALID_FIELD_VALUE,
-				array( 'version' )
+				array( $p_field_name )
 			);
 		}
 
